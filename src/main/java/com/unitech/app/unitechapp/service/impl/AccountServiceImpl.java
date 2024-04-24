@@ -61,18 +61,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void moneyTransfer(MoneyTransferRequest request) {
-        validateMoneyTransferRequest(request.getFromAccountNo(),"you should enter the source account");
-        validateMoneyTransferRequest(request.getToAccountNo(),"you should enter the target account");
+        validateMoneyTransferRequest(request.getFromAccountNo(), "you should enter the source account");
+        validateMoneyTransferRequest(request.getToAccountNo(), "you should enter the target account");
 
-        Account fromAccount = getActiveAccountByAccountNo(request.getFromAccountNo());
-        Account toAccount = getActiveAccountByAccountNo(request.getToAccountNo());
+        Account fromAccount = accountRepository
+                .findAccountByAccountNoAndStatusIsTrue(
+                        request.getFromAccountNo())
+                .orElseThrow(() -> new NotFoundException("Your account is not active or doesn't exist."));
+        Account toAccount = accountRepository
+                .findAccountByAccountNoAndStatusIsTrue(
+                        request.getToAccountNo())
+                .orElseThrow(() -> new NotFoundException("The account you want to transfer is not active or doesn't exist."));
 
-        if (fromAccount == null) {
-            throw new NotFoundException("Your account is not active or doesn't exist.");
-        }
-        if (toAccount == null) {
-            throw new NotFoundException("The account you want to transfer is not active or doesn't exist.");
-        }
         if (fromAccount.equals(toAccount)) {
             throw new BadRequestException("You can not transfer money to the same account.");
         }
@@ -84,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
         if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
             throw new BadRequestException("You don't have enough money for transfer");
         }
-        performMoneyTransfer(fromAccount, toAccount, request.getAmount());
+        doMoneyTransfer(fromAccount, toAccount, request.getAmount());
     }
 
     private void validateMoneyTransferRequest(String accountNo, String message) {
@@ -94,13 +94,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private Account getActiveAccountByAccountNo(String accountNo) {
-        Optional<Account> accountOptional = accountRepository
+        Optional<Account> optAccount = accountRepository
                 .findAccountByAccountNoAndStatusIsTrue(accountNo);
-        return accountOptional.orElse(null);
+        return optAccount.orElse(null);
     }
 
     @Transactional
-    protected void performMoneyTransfer(Account fromAccount, Account toAccount, Double amount) {
+    protected void doMoneyTransfer(Account fromAccount, Account toAccount, Double amount) {
         fromAccount.setBalance(fromAccount.getBalance() - amount);
         toAccount.setBalance(toAccount.getBalance() + amount);
     }

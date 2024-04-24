@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
                 .ifPresent(user -> {
                     throw new AlreadyExistsException("The user with this pin already exists");
                 });
-        // Validation
+
         if (request.getFirstname() == null || request.getFirstname().isEmpty() || !(ValidationUtils.nameValidation(request.getFirstname())))
             throw new BadRequestException("The name you entered is not valid");
         if (request.getLastname() == null || request.getLastname().isEmpty() || !(ValidationUtils.nameValidation(request.getLastname())))

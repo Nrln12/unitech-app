@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +22,7 @@ public class Account {
     private Boolean status;
     private Double balance;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private LocalDateTime createdAt;
 }

@@ -3,7 +3,6 @@ package com.unitech.app.unitechapp.service.impl;
 import com.unitech.app.unitechapp.model.response.CurrencyRateResponse;
 import com.unitech.app.unitechapp.service.CurrencyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -12,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class CurrencyServiceImpl implements CurrencyService {
     private static final String API_BASE_URL = "https://v6.exchangerate-api.com/v6/";
-    private String apiKey  = "db41ec93e26061809ae3b62f";
+    private String apiKey = "db41ec93e26061809ae3b62f";
     private final RestTemplate restTemplate;
 
     @Override
